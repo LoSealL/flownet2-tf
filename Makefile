@@ -1,5 +1,6 @@
 # Makefile
 
+TF_LIB = `python -c "import tensorflow as tf; print(tf.sysconfig.get_lib())"`
 TF_INC = `python -c "import tensorflow; print(tensorflow.sysconfig.get_include())"`
 
 ifndef CUDA_HOME
@@ -9,9 +10,9 @@ endif
 CC        = gcc -O2 -pthread
 CXX       = g++
 GPUCC     = nvcc
-CFLAGS    = -std=c++11 -I$(TF_INC) -I"$(CUDA_HOME)/include" -DGOOGLE_CUDA=1
-GPUCFLAGS = -c
-LFLAGS    = -pthread -shared -fPIC
+CFLAGS    = -std=c++11 -I$(TF_INC) -I"$(CUDA_HOME)/include" -I"/usr/local" -DGOOGLE_CUDA=1 -DNDEBUG
+GPUCFLAGS = -c --expt-relaxed-constexpr
+LFLAGS    = -pthread -shared -fPIC -L$(TF_LIB) -ltensorflow_framework
 GPULFLAGS = -x cu -Xcompiler -fPIC
 CGPUFLAGS = -L$(CUDA_HOME)/lib -L$(CUDA_HOME)/lib64 -lcudart
 

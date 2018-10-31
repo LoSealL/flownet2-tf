@@ -1,10 +1,12 @@
 import abc
+import matplotlib
+matplotlib.use('agg')
 from enum import Enum
 import os
 import tensorflow as tf
 from .flowlib import flow_to_image, write_flow
 import numpy as np
-from scipy.misc import imread, imsave
+from scipy.misc import imread, imsave, imresize
 import uuid
 from .training_schedules import LONG_SCHEDULE
 slim = tf.contrib.slim
@@ -37,6 +39,20 @@ class Net(object):
         Returns a single Tensor representing the total loss of the model.
         """
         return
+    
+    def __call__(self, input_a, input_b):
+        training_schedule = LONG_SCHEDULE
+
+        inputs = {
+            'input_a': input_a,
+            'input_b': input_b,
+        }
+        predictions = self.model(inputs, training_schedule)
+        return predictions['flow']
+
+    def restore(self, sess, checkpoint):
+        saver = tf.train.Saver()
+        saver.restore(sess, checkpoint)
 
     def test(self, checkpoint, input_a_path, input_b_path, out_path, save_image=True, save_flo=False):
         input_a = imread(input_a_path)
@@ -51,6 +67,11 @@ class Net(object):
             input_a = input_a / 255.0
         if input_b.max() > 1.0:
             input_b = input_b / 255.0
+        H, W, _ = input_a.shape
+        H_mod = H - H % 64
+        W_mod = W - W % 64
+        input_a = input_a[:H_mod,:W_mod,:]
+        input_b = input_b[:H_mod,:W_mod,:]
 
         # TODO: This is a hack, we should get rid of this
         training_schedule = LONG_SCHEDULE
