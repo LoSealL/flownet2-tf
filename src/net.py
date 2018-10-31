@@ -41,16 +41,20 @@ class Net(object):
         return
     
     def __call__(self, input_a, input_b):
-        training_schedule = LONG_SCHEDULE
-
-        inputs = {
-            'input_a': input_a,
-            'input_b': input_b,
-        }
-        predictions = self.model(inputs, training_schedule)
-        return predictions['flow']
+        return self.flow_results.eval(feed_dict={
+            'flownet2/inputa:0': input_a,
+            'flownet2/inputb:0': input_b,
+        })
 
     def restore(self, sess, checkpoint):
+        training_schedule = LONG_SCHEDULE
+        inputs = {
+            'input_a': tf.placeholder('float32', [None, None, None, 3], name='flownet2/inputa'),
+            'input_b': tf.placeholder('float32', [None, None, None, 3], name='flownet2/inputb'),
+        }
+        predictions = self.model(inputs, training_schedule)
+        self.flow_results = predictions['flow']
+
         saver = tf.train.Saver()
         saver.restore(sess, checkpoint)
 

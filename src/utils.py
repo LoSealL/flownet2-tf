@@ -40,4 +40,5 @@ def antipad(tensor, num=1):
     padding from the output rather than adding it to the input.
     """
     batch, h, w, c = tensor.shape.as_list()
-    return tf.slice(tensor, begin=[0, num, num, 0], size=[batch, h - 2 * num, w - 2 * num, c])
+#     return tf.slice(tensor, begin=[0, num, num, 0], size=[batch, h - 2 * num, w - 2 * num, c])
+    return tensor[:, num:-num, num:-num, :]
