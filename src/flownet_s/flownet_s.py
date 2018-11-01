@@ -12,7 +12,10 @@ class FlowNetS(Net):
         super(FlowNetS, self).__init__(mode=mode, debug=debug)
 
     def model(self, inputs, training_schedule, trainable=True):
-        _, height, width, _ = inputs['input_a'].shape.as_list()
+        # _, height, width, _ = inputs['input_a'].shape.as_list()
+        shape = tf.shape(inputs['input_a'])
+        height = shape[1]
+        width = shape[2]
         stacked = False
         with tf.variable_scope('FlowNetS'):
             if 'warped' in inputs and 'flow' in inputs and 'brightness_error' in inputs:
