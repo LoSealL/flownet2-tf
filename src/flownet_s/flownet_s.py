@@ -17,7 +17,7 @@ class FlowNetS(Net):
         height = shape[1]
         width = shape[2]
         stacked = False
-        with tf.variable_scope('FlowNetS'):
+        with tf.variable_scope('FlowNetS', reuse=tf.AUTO_REUSE):
             if 'warped' in inputs and 'flow' in inputs and 'brightness_error' in inputs:
                 stacked = True
                 concat_inputs = tf.concat([inputs['input_a'],

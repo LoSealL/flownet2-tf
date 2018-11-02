@@ -17,7 +17,7 @@ class FlowNetC(Net):
         shape = tf.shape(inputs['input_a'])
         height = shape[1]
         width = shape[2]
-        with tf.variable_scope('FlowNetC'):
+        with tf.variable_scope('FlowNetC', reuse=tf.AUTO_REUSE):
             with slim.arg_scope([slim.conv2d, slim.conv2d_transpose],
                                 # Only backprop this network if trainable
                                 trainable=trainable,

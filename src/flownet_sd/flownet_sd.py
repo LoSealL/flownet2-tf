@@ -16,7 +16,7 @@ class FlowNetSD(Net):
         shape = tf.shape(inputs['input_a'])
         height = shape[1]
         width = shape[2]
-        with tf.variable_scope('FlowNetSD'):
+        with tf.variable_scope('FlowNetSD', reuse=tf.AUTO_REUSE):
             concat_inputs = tf.concat([inputs['input_a'], inputs['input_b']], axis=3)
             with slim.arg_scope([slim.conv2d, slim.conv2d_transpose],
                                 # Only backprop this network if trainable

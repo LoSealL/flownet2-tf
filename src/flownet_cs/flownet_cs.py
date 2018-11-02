@@ -13,7 +13,7 @@ class FlowNetCS(Net):
         super(FlowNetCS, self).__init__(mode=mode, debug=debug)
 
     def model(self, inputs, training_schedule, trainable=True):
-        with tf.variable_scope('FlowNetCS'):
+        with tf.variable_scope('FlowNetCS', reuse=tf.AUTO_REUSE):
             # Forward pass through FlowNetC with weights frozen
             net_c_predictions = self.net_c.model(inputs, training_schedule, trainable=False)
 
